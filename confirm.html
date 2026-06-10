@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Confirmation - King David Schol</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cocobase/dist/browser/cocobase.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        #app {
+            width: 100%;
+            max-width: 440px;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 32px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            border-top: 5px solid #16a34a;
+        }
+        .card.reject { border-top-color: #dc2626; }
+        .card.info { border-top-color: #2563eb; }
+        .card.error { border-top-color: #dc2626; }
+        .icon {
+            width: 72px; height: 72px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .icon.success { background: #dcfce7; color: #16a34a; }
+        .icon.reject-icon { background: #fef2f2; color: #dc2626; }
+        .icon.info-icon { background: #dbeafe; color: #2563eb; }
+        .icon.error-icon { background: #fef2f2; color: #dc2626; }
+        h2 { font-size: 22px; color: #0f172a; margin-bottom: 8px; }
+        p { color: #64748b; font-size: 15px; line-height: 1.5; }
+        .reason-text {
+            background: #fef2f2;
+            border-left: 4px solid #dc2626;
+            padding: 12px 16px;
+            margin-top: 16px;
+            text-align: left;
+            font-size: 14px;
+            color: #334155;
+            border-radius: 4px;
+        }
+        .reason-text strong { display: block; margin-bottom: 4px; color: #dc2626; }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            margin: 16px 0;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        textarea:focus { border-color: #dc2626; }
+        .btn-reject {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .btn-reject:hover { background: #b91c1c; }
+        .footer {
+            margin-top: 16px;
+            font-size: 11px;
+            color: #94a3b8;
+            text-align: center;
+        }
+        .spinner {
+            width: 20px; height: 20px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #16a34a;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="content">
+            <div class="card info">
+                <div class="icon info-icon">i</div>
+                <h2>Processing...</h2>
+                <p>Please wait while we process your request.</p>
+            </div>
+        </div>
+        <div class="footer">King David Schol Payroll System</div>
+    </div>
+
+    <script>
+        emailjs.init("vnQDxKGbAD3qFJtj9");
+
+        const COCOBASE_API_KEY = "M-htt6rvgjAuQBs4i3EXI3QLKvJgKFEZ0agKFffI";
+        const COCOBASE_PROJECT_ID = "033f04e4-4c7c-4ee7-94cc-5f15fb3afd8c";
+        const COCOBASE_COLLECTION = "pending_approvals";
+        let db = null;
+        let _cocobaseDocId = null;
+
+        const ADMIN_EMAIL = "daoduemmanuel101@gmail.com";
+        const SERVICE_ID = "service_qcup3t2";
+        const TEMPLATE_ADMIN = "template_9vl9ryr";
+
+        const params = new URLSearchParams(window.location.search);
+        const action = params.get("action");
+        const id = params.get("id");
+        const cycle = params.get("cycle");
+
+        function sendAdminNotification(staffName, actionTaken, reason) {
+            const cycleLabel = cycle ? cycle.replace(/-/g, " ") : "";
+            emailjs.send(SERVICE_ID, TEMPLATE_ADMIN, {
+                admin_email: ADMIN_EMAIL,
+                staff_name: staffName,
+                action: actionTaken,
+                cycle: cycleLabel,
+                reason: reason || ""
+            }).catch(err => console.error("Admin notification failed:", err));
+        }
+
+        async function loadApproval() {
+            if (!db) return null;
+            try {
+                const docs = await db.listDocuments(COCOBASE_COLLECTION, { filters: { cycle }, limit: 1 });
+                if (docs && docs.length > 0) {
+                    _cocobaseDocId = docs[0]._id;
+                    return docs[0];
+                }
+            } catch (err) {
+                console.warn("Cocobase load failed:", err);
+            }
+            return null;
+        }
+
+        async function saveApproval(approval) {
+            if (!db) return;
+            try {
+                if (_cocobaseDocId) {
+                    await db.updateDocument(COCOBASE_COLLECTION, _cocobaseDocId, approval);
+                } else {
+                    const created = await db.createDocument(COCOBASE_COLLECTION, approval);
+                    _cocobaseDocId = created._id;
+                }
+            } catch (err) {
+                console.warn("Cocobase save failed:", err);
+            }
+        }
+
+        async function processAction() {
+            const content = document.getElementById("content");
+
+            if (!action || !id || !cycle) {
+                content.innerHTML = `
+                    <div class="card error">
+                        <div class="icon error-icon">!</div>
+                        <h2>Invalid Link</h2>
+                        <p>This confirmation link is invalid or expired.</p>
+                    </div>`;
+                return;
+            }
+
+            if (window.CocobaseSDK) {
+                db = new CocobaseSDK.Cocobase({ apiKey: COCOBASE_API_KEY, projectId: COCOBASE_PROJECT_ID });
+            }
+
+            const approval = await loadApproval();
+
+            if (!approval) {
+                content.innerHTML = `
+                    <div class="card error">
+                        <div class="icon error-icon">!</div>
+                        <h2>No Data Found</h2>
+                        <p>This approval request is no longer available. It may have already been processed.</p>
+                    </div>`;
+                return;
+            }
+
+            const detail = approval.details.find(d => d.id === id);
+
+            if (!detail || detail.status !== "pending") {
+                const currentStatus = detail ? detail.status : "unknown";
+                const statusMsg = {
+                    "approved": "You have already approved this payment.",
+                    "rejected": "You have already rejected this payment."
+                }[currentStatus] || "This request has already been responded to.";
+                content.innerHTML = `
+                    <div class="card info">
+                        <div class="icon info-icon">i</div>
+                        <h2>Already Processed</h2>
+                        <p>${statusMsg}</p>
+                    </div>`;
+                return;
+            }
+
+            if (action === "approve") {
+                detail.status = "approved";
+                detail.rejectionReason = null;
+                await saveApproval(approval);
+
+                content.innerHTML = `
+                    <div class="card">
+                        <div class="icon success">✔</div>
+                        <h2>Payment Approved</h2>
+                        <p>Your approval has been recorded. The payroll administrator has been notified.</p>
+                        <p style="margin-top: 16px; font-size: 12px; color: #94a3b8;">You may close this page.</p>
+                    </div>`;
+
+                sendAdminNotification(detail.name, "approved");
+
+            } else if (action === "reject") {
+                content.innerHTML = `
+                    <div class="card reject">
+                        <div class="icon reject-icon">✘</div>
+                        <h2>Reject Payment</h2>
+                        <p>Please provide a reason for rejecting this payment.</p>
+                        <textarea id="reason" rows="3" placeholder="Enter your reason for rejection..."></textarea>
+                        <button class="btn-reject" onclick="submitRejection()">Submit Rejection</button>
+                    </div>`;
+
+            } else {
+                content.innerHTML = `
+                    <div class="card error">
+                        <div class="icon error-icon">!</div>
+                        <h2>Invalid Action</h2>
+                        <p>The requested action "${action}" is not recognized.</p>
+                    </div>`;
+            }
+        }
+
+        window.submitRejection = async function() {
+            const reasonEl = document.getElementById("reason");
+            const reason = reasonEl.value.trim();
+            if (!reason) {
+                alert("Please enter a reason for rejection.");
+                reasonEl.focus();
+                return;
+            }
+
+            const content = document.getElementById("content");
+            const approval = await loadApproval();
+            if (!approval) {
+                content.innerHTML = `
+                    <div class="card error">
+                        <div class="icon error-icon">!</div>
+                        <h2>No Data Found</h2>
+                        <p>This approval request is no longer available. It may have already been processed.</p>
+                    </div>`;
+                return;
+            }
+
+            const detail = approval.details.find(d => d.id === id);
+            if (!detail) {
+                content.innerHTML = `
+                    <div class="card error">
+                        <div class="icon error-icon">!</div>
+                        <h2>Staff Not Found</h2>
+                        <p>Your record was not found in the approval data.</p>
+                    </div>`;
+                return;
+            }
+
+            detail.status = "rejected";
+            detail.rejectionReason = reason;
+            await saveApproval(approval);
+
+            content.innerHTML = `
+                <div class="card reject">
+                    <div class="icon reject-icon">✘</div>
+                    <h2>Payment Rejected</h2>
+                    <p>Your rejection has been recorded. The payroll administrator has been notified.</p>
+                    <div class="reason-text"><strong>Reason:</strong>${reason}</div>
+                    <p style="margin-top: 16px; font-size: 12px; color: #94a3b8;">You may close this page.</p>
+                </div>`;
+
+            sendAdminNotification(detail.name, "rejected", reason);
+        };
+
+        processAction();
+    </script>
+</body>
+</html>

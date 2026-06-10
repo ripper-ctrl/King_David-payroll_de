@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPay | King David Schol Payroll & Management Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <!-- AUTH PORTAL -->
+    <div id="auth-portal-container" class="auth-portal">
+        <div class="auth-hero-panel">
+            <div class="auth-hero-inner">
+                <div class="auth-logo">
+                    <div class="auth-logo-icon"><i data-lucide="graduation-cap"></i></div>
+                    <div>
+                        <h1>EduPay</h1>
+                        <span>King David Schol Payroll Management</span>
+                    </div>
+                </div>
+                <div class="auth-hero-headline">
+                    <h2>Smart Payroll,<br><span>Built for King David Schol.</span></h2>
+                    <p>Automate staff payments, track attendance, and generate payslips — all in one secure portal.</p>
+                </div>
+                <div class="auth-feature-list">
+                    <div class="auth-feature-item">
+                        <div class="auth-feature-icon"><i data-lucide="zap"></i></div>
+                        <span>Automated gross-to-net salary calculations</span>
+                    </div>
+                    <div class="auth-feature-item">
+                        <div class="auth-feature-icon"><i data-lucide="calendar-check"></i></div>
+                        <span>Real-time attendance &amp; timesheet tracking</span>
+                    </div>
+                    <div class="auth-feature-item">
+                        <div class="auth-feature-icon"><i data-lucide="file-text"></i></div>
+                        <span>One-click printable employee payslips</span>
+                    </div>
+                    <div class="auth-feature-item">
+                        <div class="auth-feature-icon"><i data-lucide="shield-check"></i></div>
+                        <span>Role-based access for Admin &amp; Staff portals</span>
+                    </div>
+                </div>
+                    <div class="auth-floating-cards">
+                        <div class="auth-stat-card">
+                            <i data-lucide="users"></i>
+                            <div><span>Active Staff</span><strong>6 Employees</strong></div>
+                        </div>
+                        <div class="auth-stat-card">
+                            <i data-lucide="banknote"></i>
+                            <div><span>Monthly Payroll</span><strong>₦4.2M+</strong></div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+        <div class="auth-form-panel">
+            <div class="auth-form-container">
+                <div class="auth-mobile-logo">
+                    <div class="auth-logo-icon"><i data-lucide="graduation-cap"></i></div>
+                    <div>
+                        <h1>EduPay</h1>
+                        <span>King David Schol Payroll</span>
+                    </div>
+                </div>
+                <div id="auth-login-form" class="auth-form-section active">
+                    <div class="auth-form-header">
+                        <h3>Welcome back</h3>
+                        <p>Enter your credentials to access your portal</p>
+                    </div>
+                    <div id="login-error-msg" class="auth-error-msg hidden"></div>
+                    <div class="auth-field-group">
+                        <label for="login-email">Email Address</label>
+                        <div class="auth-input-wrap">
+                            <i data-lucide="mail"></i>
+                            <input type="email" id="login-email" placeholder="e.g. fiona.owen@kds.edu" autocomplete="email">
+                        </div>
+                    </div>
+                    <div class="auth-field-group">
+                        <label for="login-password">Password</label>
+                        <div class="auth-input-wrap">
+                            <i data-lucide="lock"></i>
+                            <input type="password" id="login-password" placeholder="Your secure password" autocomplete="current-password">
+                            <button class="auth-toggle-pw" onclick="togglePasswordVisibility('login-password', this)" type="button"><i data-lucide="eye"></i></button>
+                        </div>
+                    </div>
+                    <button class="auth-submit-btn" id="login-submit-btn" onclick="handleLogin()">
+                        <i data-lucide="log-in"></i> Sign In to EduPay
+                    </button>
+                    <div class="auth-demo-hint">
+                        <i data-lucide="info"></i>
+                        <div>
+                            <strong>Admin:</strong> fiona.owen@kds.edu / admin123<br>
+                            <strong>Staff logins:</strong> a.vance@kds.edu / vance123 &bull; c.sterling@kds.edu / sterling123 &bull; m.dupont@kds.edu / dupont123 &bull; s.zhang@kds.edu / zhang123 &bull; j.ross@kds.edu / ross123 &bull; r.finch@kds.edu / finch123
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR BACKDROP (mobile only) -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <div class="app-container hidden" id="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <div class="logo-icon"><i data-lucide="graduation-cap"></i></div>
+                    <div class="logo-text">
+                        <h2>EduPay</h2>
+                        <span>King David Schol Payroll</span>
+                    </div>
+                </div>
+                <button class="sidebar-close-btn" id="sidebar-close-btn" title="Close menu">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div id="admin-nav">
+                    <p class="nav-section-label">Administration</p>
+                    <ul>
+                        <li class="nav-item active" data-view="dashboard">
+                            <a href="#"><i data-lucide="layout-dashboard"></i> <span>Dashboard</span></a>
+                        </li>
+                        <li class="nav-item" data-view="staff">
+                            <a href="#"><i data-lucide="users"></i> <span>Staff Directory</span></a>
+                        </li>
+                        <li class="nav-item" data-view="spreadsheet">
+                            <a href="#"><i data-lucide="table"></i> <span>Spreadsheet</span></a>
+                        </li>
+                        <li class="nav-item" data-view="attendance">
+                            <a href="#"><i data-lucide="calendar-check"></i> <span>Log Attendance</span></a>
+                        </li>
+                        <li class="nav-item" data-view="payroll">
+                            <a href="#"><i data-lucide="coins"></i> <span>Run Payroll</span></a>
+                        </li>
+                        <li class="nav-item" data-view="history">
+                            <a href="#"><i data-lucide="history"></i> <span>Payroll History</span></a>
+                        </li>
+                        <li class="nav-item" data-view="users">
+                            <a href="#"><i data-lucide="key-round"></i> <span>User Management</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="staff-nav" class="hidden">
+                    <p class="nav-section-label">My Portal</p>
+                    <ul>
+                        <li class="nav-item" data-view="my-dashboard">
+                            <a href="#"><i data-lucide="layout-dashboard"></i> <span>My Dashboard</span></a>
+                        </li>
+                        <li class="nav-item" data-view="my-approvals">
+                            <a href="#"><i data-lucide="check-circle"></i> <span>My Approvals</span></a>
+                        </li>
+                        <li class="nav-item" data-view="my-timesheet">
+                            <a href="#"><i data-lucide="clock"></i> <span>My Timesheet</span></a>
+                        </li>
+                        <li class="nav-item" data-view="my-payslips">
+                            <a href="#"><i data-lucide="file-text"></i> <span>My Payslips</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-user-block">
+                    <div class="avatar" id="sidebar-avatar">FO</div>
+                    <div class="user-info">
+                        <h4 id="sidebar-user-name">Fiona Owen</h4>
+                        <span id="sidebar-user-role">Finance Officer</span>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logout-btn" title="Sign Out">
+                    <i data-lucide="log-out"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <button class="hamburger-btn" id="hamburger-btn" title="Open menu">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div class="header-title-group">
+                        <h1 id="view-title">Dashboard</h1>
+                        <p id="view-subtitle" class="text-secondary">Welcome back. Here is today's overview.</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="date-badge">
+                        <i data-lucide="calendar"></i>
+                        <span id="current-date">Monday, 25 May 2026</span>
+                    </div>
+                    <div class="school-badge">
+                        <i data-lucide="shield-check"></i>
+                        <span id="school-name-badge">King David Schol</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-body">
+
+                <!-- DASHBOARD VIEW -->
+                <section id="dashboard-view" class="view-section active">
+                    <div class="metrics-grid">
+                        <div class="metric-card glass-card">
+                            <div class="metric-icon green"><i data-lucide="banknote"></i></div>
+                            <div class="metric-details">
+                                <span class="metric-label">Estimated Monthly Payroll</span>
+                                <h3 class="metric-value" id="dash-total-payroll">₦0.00</h3>
+                                <span class="metric-trend text-green"><i data-lucide="trending-up"></i> Projected current cycle</span>
+                            </div>
+                        </div>
+                        <div class="metric-card glass-card">
+                            <div class="metric-icon blue"><i data-lucide="users"></i></div>
+                            <div class="metric-details">
+                                <span class="metric-label">Active Employees</span>
+                                <h3 class="metric-value" id="dash-active-staff">0</h3>
+                                <span class="metric-trend text-blue" id="dash-staff-ratio">0 FT / 0 PT</span>
+                            </div>
+                        </div>
+                        <div class="metric-card glass-card">
+                            <div class="metric-icon purple"><i data-lucide="clock"></i></div>
+                            <div class="metric-details">
+                                <span class="metric-label">Hours Logged (Part-Time)</span>
+                                <h3 class="metric-value" id="dash-hours-logged">0 hrs</h3>
+                                <span class="metric-trend text-purple" id="dash-hours-period">Current cycle inputs</span>
+                            </div>
+                        </div>
+                        <div class="metric-card glass-card">
+                            <div class="metric-icon amber"><i data-lucide="alert-circle"></i></div>
+                            <div class="metric-details">
+                                <span class="metric-label">Unprocessed Days Left</span>
+                                <h3 class="metric-value" id="dash-days-left">5 days</h3>
+                                <span class="metric-trend text-amber">Before monthly cutoff</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-rows-grid">
+                        <div class="dashboard-card glass-card span-2">
+                            <div class="card-header">
+                                <h3>Department Payroll Distribution</h3>
+                                <span class="text-secondary">Total monthly spending by department</span>
+                            </div>
+                            <div class="card-body chart-container">
+                                <div class="custom-chart" id="department-chart">
+                                    <div class="chart-loader">Loading distribution analytics...</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dashboard-card glass-card">
+                            <div class="card-header">
+                                <h3>Quick Actions</h3>
+                                <span class="text-secondary">Frequent accounting procedures</span>
+                            </div>
+                            <div class="card-body quick-actions-list">
+                                <button class="action-btn" data-action="run-payroll-shortcut">
+                                    <i data-lucide="play-circle"></i>
+                                    <div class="btn-text">
+                                        <h4>Calculate This Month</h4>
+                                        <p>Review &amp; run calculations for the current cycle</p>
+                                    </div>
+                                    <i data-lucide="chevron-right" class="arrow"></i>
+                                </button>
+                                <button class="action-btn" data-action="add-staff-shortcut">
+                                    <i data-lucide="user-plus"></i>
+                                    <div class="btn-text">
+                                        <h4>Onboard New Teacher</h4>
+                                        <p>Add new employee and salary properties</p>
+                                    </div>
+                                    <i data-lucide="chevron-right" class="arrow"></i>
+                                </button>
+                                <button class="action-btn" data-action="log-attendance-shortcut">
+                                    <i data-lucide="edit-3"></i>
+                                    <div class="btn-text">
+                                        <h4>Verify Hours &amp; Leaves</h4>
+                                        <p>Record timesheets and check for absences</p>
+                                    </div>
+                                    <i data-lucide="chevron-right" class="arrow"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- STAFF DIRECTORY VIEW -->
+                <section id="staff-view" class="view-section">
+                    <div class="control-bar glass-card">
+                        <div class="search-box">
+                            <i data-lucide="search"></i>
+                            <input type="text" id="staff-search" placeholder="Search staff by name, email, or designation...">
+                        </div>
+                        <div class="filter-controls">
+                            <select id="filter-dept">
+                                <option value="all">All Departments</option>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="Sciences">Sciences</option>
+                                <option value="Humanities">Humanities</option>
+                                <option value="Administration">Administration</option>
+                                <option value="Support">Support</option>
+                            </select>
+                            <select id="filter-type">
+                                <option value="all">All Contract Types</option>
+                                <option value="Full-Time">Full-Time Salaried</option>
+                                <option value="Part-Time">Part-Time Hourly</option>
+                            </select>
+                            <button class="primary-btn" id="add-staff-btn">
+                                <i data-lucide="user-plus"></i> Add Employee
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container glass-card">
+                        <table class="data-table" id="staff-table">
+                            <thead>
+                                <tr>
+                                    <th>Staff Member</th>
+                                    <th>Department</th>
+                                    <th>Contract Type</th>
+                                    <th>Designation</th>
+                                    <th>Base Rate/Salary</th>
+                                    <th>Allowances</th>
+                                    <th>Deductions</th>
+                                    <th class="actions-col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staff-table-body"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- SPREADSHEET VIEW -->
+                <section id="spreadsheet-view" class="view-section">
+                    <div class="control-bar glass-card">
+                        <div class="spreadsheet-tabs">
+                            <button class="spreadsheet-tab-btn active" data-sheet="staff">
+                                <i data-lucide="users"></i> Staff Data
+                            </button>
+                            <button class="spreadsheet-tab-btn" data-sheet="attendance">
+                                <i data-lucide="calendar-check"></i> Attendance
+                            </button>
+                            <button class="spreadsheet-tab-btn" data-sheet="payroll">
+                                <i data-lucide="coins"></i> Payroll Inputs
+                            </button>
+                        </div>
+                        <div class="spreadsheet-actions">
+                            <button class="secondary-btn" id="spreadsheet-import-btn">
+                                <i data-lucide="upload"></i> Import Excel
+                            </button>
+                            <button class="secondary-btn" id="spreadsheet-export-btn">
+                                <i data-lucide="download"></i> Export Excel
+                            </button>
+                            <button class="secondary-btn" id="spreadsheet-print-btn">
+                                <i data-lucide="printer"></i> Print
+                            </button>
+                            <button class="primary-btn" id="spreadsheet-save-btn">
+                                <i data-lucide="save"></i> Save Changes
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="spreadsheet-container glass-card" id="spreadsheet-container">
+                        <div class="spreadsheet-toolbar">
+                            <div class="toolbar-group">
+                                <button class="toolbar-btn" data-action="bold" title="Bold"><i data-lucide="bold"></i></button>
+                                <button class="toolbar-btn" data-action="italic" title="Italic"><i data-lucide="italic"></i></button>
+                            </div>
+                            <div class="toolbar-group">
+                                <select id="font-size-select" class="toolbar-select" title="Font Size">
+                                    <option value="11">11px</option>
+                                    <option value="12" selected>12px</option>
+                                    <option value="13">13px</option>
+                                    <option value="14">14px</option>
+                                    <option value="16">16px</option>
+                                </select>
+                            </div>
+                            <div class="toolbar-group">
+                                <span class="toolbar-label" id="sheet-info">Staff Data Sheet</span>
+                            </div>
+                        </div>
+                        <div class="spreadsheet-grid" id="spreadsheet-grid">
+                            <!-- Spreadsheet will be rendered here -->
+                        </div>
+                    </div>
+                    
+                    <!-- File input for import (hidden) -->
+                    <input type="file" id="spreadsheet-file-input" accept=".xlsx,.xls,.csv" style="display: none;">
+                </section>
+
+                <!-- ATTENDANCE VIEW -->
+                <section id="attendance-view" class="view-section">
+                    <div class="banner-card glass-card border-left-purple">
+                        <div class="banner-content">
+                            <h3>Timesheet &amp; Attendance Logs</h3>
+                            <p class="text-secondary">Input class hours taught for part-time/hourly staff and log absent days for full-time salaried staff.</p>
+                        </div>
+                        <div class="banner-meta">
+                            <label for="attendance-cycle-select">Current Cycle:</label>
+                            <select id="attendance-cycle-select" class="theme-select">
+                                <option value="May-2026">May 2026</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-container glass-card margin-top-lg">
+                        <table class="data-table" id="attendance-table">
+                            <thead>
+                                <tr>
+                                    <th>Staff Member</th>
+                                    <th>Contract Type</th>
+                                    <th>Weekly Load Limit</th>
+                                    <th>Logged Input</th>
+                                    <th>Unit</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendance-table-body"></tbody>
+                        </table>
+                        <div class="table-footer">
+                            <span class="text-secondary" id="attendance-save-status">All attendance changes saved locally.</span>
+                            <button class="primary-btn" id="save-attendance-btn">
+                                <i data-lucide="save"></i> Save Attendance &amp; Hours
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- RUN PAYROLL VIEW -->
+                <section id="payroll-view" class="view-section">
+                    <!-- Mobile slide tabs (hidden on desktop) -->
+                    <div class="payroll-mobile-tabs" id="payroll-mobile-tabs">
+                        <button class="payroll-tab-btn active" data-panel="0">
+                            <i data-lucide="table-2"></i> Worksheet
+                        </button>
+                        <button class="payroll-tab-btn" data-panel="1">
+                            <i data-lucide="check-square"></i> Run Summary
+                        </button>
+                    </div>
+                    <div class="payroll-slider-wrapper">
+                    <div class="payroll-split-layout" id="payroll-split-layout">
+                        <div class="payroll-calculations-panel glass-card">
+                            <div class="panel-header-row">
+                                <div>
+                                    <h3>Monthly Calculation Worksheet</h3>
+                                    <span class="text-secondary">Calculated values for <span class="current-month-text">May 2026</span></span>
+                                </div>
+                                <span class="badge badge-amber" id="payroll-status-badge">Unprocessed</span>
+                            </div>
+                            <div class="worksheet-table-container">
+                                <table class="data-table" id="worksheet-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Staff Member</th>
+                                            <th>Gross Base</th>
+                                            <th>Allowances</th>
+                                            <th>Deductions</th>
+                                            <th>Net Pay</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="worksheet-table-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="payroll-summary-panel glass-card">
+                            <h3>Run Summary</h3>
+                            <p class="text-secondary margin-bottom-md">Review final aggregate totals before processing payouts.</p>
+                            <div class="summary-breakdown">
+                                <div class="breakdown-item">
+                                    <span>Total Gross Base Pay</span>
+                                    <h4 id="sum-gross">₦0.00</h4>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>Total Allowances (+)</span>
+                                    <h4 id="sum-allowances">₦0.00</h4>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>Total Deductions (-)</span>
+                                    <h4 id="sum-deductions">₦0.00</h4>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="breakdown-item total-item">
+                                    <span>Net School Outflow</span>
+                                    <h2 id="sum-net">₦0.00</h2>
+                                </div>
+                            </div>
+                            <div class="validation-checklist">
+                                <h4>Compliance Checks</h4>
+                                <div class="check-item checked">
+                                    <i data-lucide="check-circle-2"></i>
+                                    <span>All employee parameters configured</span>
+                                </div>
+                                <div class="check-item" id="chk-hours">
+                                    <i data-lucide="circle"></i>
+                                    <span id="chk-hours-text">Verify hours are logged (0 logged so far)</span>
+                                </div>
+                                <div class="check-item checked">
+                                    <i data-lucide="check-circle-2"></i>
+                                    <span>Standard statutory tax rates applied</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px;">
+                                <button class="primary-btn full-width" id="send-approval-btn" style="flex: 1;">
+                                    <i data-lucide="send"></i> Send for Staff Approval
+                                </button>
+                                <button class="success-btn full-width margin-top-lg" id="approve-payroll-btn" style="flex: 1;" disabled>
+                                    <i data-lucide="check-square"></i> Finalize Payroll
+                                </button>
+                            </div>
+                            <div id="approval-status" class="text-secondary" style="margin-top: 12px; font-size: 13px;"></div>
+                            <div id="staff-approval-status"></div>
+                        </div>
+                    </div>
+                    </div><!-- /.payroll-slider-wrapper -->
+                </section>
+
+                <!-- PAYROLL HISTORY VIEW -->
+                <section id="history-view" class="view-section">
+                    <div class="table-container glass-card">
+                        <div class="card-header-row" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                            <div>
+                                <h3>Archived Payroll Run Logs</h3>
+                                <span class="text-secondary">Historical payroll outputs and printable statements</span>
+                            </div>
+                            <button class="secondary-btn" id="export-all-csv-btn" style="font-size:13px;">
+                                <i data-lucide="download"></i> Export All as CSV
+                            </button>
+                        </div>
+                        <table class="data-table" id="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Pay Period</th>
+                                    <th>Finalized Date</th>
+                                    <th>Total Staff Paid</th>
+                                    <th>Total Outflow</th>
+                                    <th>Approver</th>
+                                    <th class="actions-col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="table-container glass-card margin-top-lg hidden" id="history-detail-container">
+                        <div class="detail-header-row">
+                            <div>
+                                <h3 id="history-detail-month">Details for Pay Cycle</h3>
+                                <span class="text-secondary">Individual staff payouts in this run</span>
+                            </div>
+                            <button class="secondary-btn" id="close-history-detail-btn">
+                                <i data-lucide="x"></i> Close Details
+                            </button>
+                        </div>
+                        <table class="data-table" id="history-detail-table">
+                            <thead>
+                                <tr>
+                                    <th>Staff Member</th>
+                                    <th>Designation</th>
+                                    <th>Type</th>
+                                    <th>Hours/Days</th>
+                                    <th>Base Pay</th>
+                                    <th>Allowances</th>
+                                    <th>Deductions</th>
+                                    <th>Net Paid</th>
+                                    <th class="actions-col">Statement</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-detail-body"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- USER MANAGEMENT VIEW (Admin) -->
+                <section id="users-view" class="view-section">
+                    <div class="metrics-grid" id="user-stats-grid"></div>
+                    <div class="table-container glass-card margin-top-lg">
+                        <div class="card-header-row">
+                            <h3>System User Accounts</h3>
+                            <span class="text-secondary">Manage login credentials, access control, and staff record assignments</span>
+                        </div>
+                        <table class="data-table" id="users-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Login Email</th>
+                                    <th>Role</th>
+                                    <th>Linked Staff Record</th>
+                                    <th>Status</th>
+                                    <th class="actions-col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- MY DASHBOARD VIEW (Staff) -->
+                <section id="my-dashboard-view" class="view-section">
+                    <div class="glass-card margin-bottom-lg" style="padding: 24px;">
+                        <div class="staff-profile-header">
+                            <div class="staff-profile-avatar" id="my-profile-avatar">
+                                <i data-lucide="user"></i>
+                            </div>
+                            <div class="staff-profile-info">
+                                <h3 id="my-profile-name">—</h3>
+                                <p id="my-profile-email" class="text-secondary"></p>
+                                <div class="staff-profile-meta">
+                                    <span class="badge badge-blue" id="my-profile-contract">—</span>
+                                    <span class="badge badge-purple" id="my-profile-dept">—</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-card glass-card">
+                            <div class="metric-icon green"><i data-lucide="banknote"></i></div>
+                            <div class="metric-details">
+                                <span class="metric-label">Estimated Net Pay</span>
+                                <h3 class="metric-value" id="my-net-pay">₦0.00</h3>
+                                <span class="metric-trend text-green">Current cycle projection</span>
+                            </div>
+                        </div>
+                        <div class="metric-card glass-card">
+                            <div class="metric-icon blue"><i data-lucide="clock"></i></div>
+                            <div class="metric-details">
+                                <span class="metric-label" id="my-input-label">Hours Logged</span>
+                                <h3 class="metric-value" id="my-input-value">0</h3>
+                                <span class="metric-trend text-blue" id="my-input-unit">This cycle</span>
+                            </div>
+                        </div>
+                        <div class="metric-card glass-card">
+                            <div class="metric-icon purple"><i data-lucide="building-2"></i></div>
+                            <div class="metric-details">
+                                <span class="metric-label">Department</span>
+                                <h3 class="metric-value" id="my-department" style="font-size:16px; margin-top:4px;">—</h3>
+                                <span class="metric-trend text-purple" id="my-contract-type">—</span>
+                            </div>
+                        </div>
+                        <div class="metric-card glass-card">
+                            <div class="metric-icon amber"><i data-lucide="badge-check"></i></div>
+                            <div class="metric-details">
+                                <span class="metric-label">Your Role</span>
+                                <h3 class="metric-value" id="my-designation" style="font-size:13px; line-height:1.3; margin-top:4px;">—</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-rows-grid">
+                        <div class="dashboard-card glass-card span-2">
+                            <div class="card-header">
+                                <h3>Your Pay Breakdown</h3>
+                                <span class="text-secondary">Detailed calculation for the current cycle</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="breakdown-rows">
+                                    <div class="breakdown-row-item"><span class="row-label">Base Earnings</span><span class="row-value" id="my-base-earned">₦0.00</span></div>
+                                    <div class="breakdown-row-item"><span class="row-label">Housing Allowance</span><span class="row-value positive" id="my-allow-housing">+₦0.00</span></div>
+                                    <div class="breakdown-row-item"><span class="row-label">Transport Allowance</span><span class="row-value positive" id="my-allow-transport">+₦0.00</span></div>
+                                    <div class="breakdown-row-item"><span class="row-label">Extra / Academic Allowance</span><span class="row-value positive" id="my-allow-extra">+₦0.00</span></div>
+                                    <div class="breakdown-row-item"><span class="row-label">Gross Total</span><span class="row-value" id="my-gross">₦0.00</span></div>
+                                    <div class="breakdown-row-item"><span class="row-label">Income Tax</span><span class="row-value negative" id="my-tax-ded">-₦0.00</span></div>
+                                    <div class="breakdown-row-item"><span class="row-label">Pension Contribution</span><span class="row-value negative" id="my-pension-ded">-₦0.00</span></div>
+                                    <div class="breakdown-row-item" style="border-top: 2px solid var(--border-color); padding-top: 16px; margin-top: 4px;">
+                                        <span class="row-label" style="font-weight:700; color:var(--primary);">NET TAKE-HOME</span>
+                                        <span class="row-value" style="font-size:22px; color:var(--accent); font-weight:800;" id="my-final-net">₦0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dashboard-card glass-card">
+                            <div class="card-header">
+                                <h3>Quick Actions</h3>
+                                <span class="text-secondary">Manage your portal</span>
+                            </div>
+                            <div class="card-body quick-actions-list">
+                                <button class="action-btn" data-action="goto-my-timesheet">
+                                    <i data-lucide="clock"></i>
+                                    <div class="btn-text"><h4>Update My Timesheet</h4><p>Log your hours or check absences for this cycle</p></div>
+                                    <i data-lucide="chevron-right" class="arrow"></i>
+                                </button>
+                                <button class="action-btn" data-action="goto-my-payslips">
+                                    <i data-lucide="file-text"></i>
+                                    <div class="btn-text"><h4>View My Payslips</h4><p>Access your historical payslip statements</p></div>
+                                    <i data-lucide="chevron-right" class="arrow"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MY APPROVALS VIEW (Staff) -->
+                <section id="my-approvals-view" class="view-section">
+                    <div class="glass-card margin-bottom-lg" style="padding: 24px;">
+                        <div class="staff-profile-header">
+                            <div class="staff-profile-avatar" id="my-approvals-profile-avatar">
+                                <i data-lucide="user"></i>
+                            </div>
+                            <div class="staff-profile-info">
+                                <h3 id="my-approvals-profile-name">—</h3>
+                                <p id="my-approvals-profile-email" class="text-secondary"></p>
+                                <div class="staff-profile-meta">
+                                    <span class="badge badge-blue" id="my-approvals-profile-contract">—</span>
+                                    <span class="badge badge-purple" id="my-approvals-profile-dept">—</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="banner-card glass-card border-left-purple" style="margin-bottom: 28px;">
+                        <div class="banner-content">
+                            <h3>Pending Payment Approvals</h3>
+                            <p class="text-secondary">Review and approve or reject your salary payment for the current cycle.</p>
+                        </div>
+                    </div>
+                    <div id="my-approvals-list"></div>
+                </section>
+
+                <!-- MY TIMESHEET VIEW (Staff) -->
+                <section id="my-timesheet-view" class="view-section">
+                    <div class="banner-card glass-card border-left-purple" style="margin-bottom: 28px;">
+                        <div class="banner-content">
+                            <h3>My Timesheet — <span class="current-month-text">May 2026</span></h3>
+                            <p class="text-secondary" id="my-timesheet-desc">Log your teaching hours for the current pay cycle below.</p>
+                        </div>
+                    </div>
+                    <div class="my-timesheet-card glass-card">
+                        <div class="my-timesheet-hero">
+                            <div class="staff-cell">
+                                <div class="staff-avatar" id="my-timesheet-avatar">AV</div>
+                                <div class="staff-info">
+                                    <span class="staff-name" id="my-timesheet-name">—</span>
+                                    <span class="staff-email" id="my-timesheet-designation">—</span>
+                                </div>
+                            </div>
+                            <div class="my-timesheet-inputs">
+                                <div class="timesheet-input-block">
+                                    <label id="my-timesheet-input-label">Teaching Hours This Cycle</label>
+                                    <input type="number" class="timesheet-big-input" id="my-timesheet-input" min="0" value="0">
+                                </div>
+                                <div class="timesheet-input-block">
+                                    <label>Weekly Load Limit</label>
+                                    <div style="font-size:20px; font-weight:700; color:var(--text-secondary); padding: 12px 0;" id="my-load-limit">—</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-footer" style="border-top: 1px solid var(--border-color);">
+                            <span class="text-secondary" id="my-timesheet-save-status">Changes auto-saved locally.</span>
+                            <button class="primary-btn" id="save-my-timesheet-btn">
+                                <i data-lucide="save"></i> Save My Hours
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MY PAYSLIPS VIEW (Staff) -->
+                <section id="my-payslips-view" class="view-section">
+                    <div class="glass-card margin-bottom-lg" style="padding: 24px;">
+                        <div class="staff-profile-header">
+                            <div class="staff-profile-avatar" id="my-payslips-profile-avatar">
+                                <i data-lucide="user"></i>
+                            </div>
+                            <div class="staff-profile-info">
+                                <h3 id="my-payslips-profile-name">—</h3>
+                                <p id="my-payslips-profile-email" class="text-secondary"></p>
+                                <div class="staff-profile-meta">
+                                    <span class="badge badge-blue" id="my-payslips-profile-contract">—</span>
+                                    <span class="badge badge-purple" id="my-payslips-profile-dept">—</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="banner-card glass-card border-left-purple" style="margin-bottom: 28px;">
+                        <div class="banner-content">
+                            <h3>My Payslip History</h3>
+                            <p class="text-secondary">Access and print all your finalized payslip statements from previous pay cycles.</p>
+                        </div>
+                    </div>
+                    <div class="my-payslips-list" id="my-payslips-list"></div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: ADD / EDIT STAFF -->
+    <div class="modal-overlay" id="staff-modal">
+        <div class="modal-container glass-card animate-zoom">
+            <div class="modal-header">
+                <h3 id="modal-title">Add New Employee</h3>
+                <button class="close-btn" id="close-staff-modal-btn"><i data-lucide="x"></i></button>
+            </div>
+            <form id="staff-form">
+                <input type="hidden" id="staff-id-field">
+                <div class="modal-body scrollable-modal-body">
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="staff-photo">Staff Photo</label>
+                        <div class="photo-upload-wrap">
+                            <div class="photo-preview" id="staff-photo-preview">
+                                <i data-lucide="user" class="photo-placeholder-icon"></i>
+                                <span class="photo-placeholder-text">Click to upload</span>
+                            </div>
+                            <input type="file" id="staff-photo" accept="image/*" style="display: none;" onchange="handlePhotoUpload(this)">
+                            <button type="button" class="secondary-btn" onclick="document.getElementById('staff-photo').click()">
+                                <i data-lucide="upload"></i> Choose Photo
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label for="staff-name">Full Name *</label>
+                            <input type="text" id="staff-name" required placeholder="e.g. Dr. John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="staff-email">Email Address *</label>
+                            <input type="email" id="staff-email" required placeholder="e.g. j.doe@kds.edu">
+                        </div>
+                    </div>
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="staff-dept">Department *</label>
+                            <select id="staff-dept" required>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="Sciences">Sciences</option>
+                                <option value="Humanities">Humanities</option>
+                                <option value="Administration">Administration</option>
+                                <option value="Support">Support</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="staff-designation">Designation *</label>
+                            <input type="text" id="staff-designation" required placeholder="e.g. Senior Biology Teacher">
+                        </div>
+                        <div class="form-group">
+                            <label for="staff-contract-type">Contract Type *</label>
+                            <select id="staff-contract-type" required>
+                                <option value="Full-Time">Full-Time Salaried</option>
+                                <option value="Part-Time">Part-Time Hourly</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <h4 class="form-section-title">Base Compensation Setup</h4>
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label id="salary-label-text" for="staff-base-pay">Monthly Base Salary (₦) *</label>
+                            <input type="number" step="0.01" id="staff-base-pay" required placeholder="e.g. 800000">
+                        </div>
+                        <div class="form-group" id="limit-group">
+                            <label for="staff-limit">Weekly Load Limit (Hours/Classes)</label>
+                            <input type="number" id="staff-limit" value="20" placeholder="e.g. 20">
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="form-row-2">
+                        <div>
+                            <h4 class="form-section-title">Allowances (Monthly)</h4>
+                            <div class="form-group">
+                                <label for="staff-allow-housing">Housing Allowance (₦)</label>
+                                <input type="number" step="0.01" id="staff-allow-housing" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="staff-allow-transport">Transport Allowance (₦)</label>
+                                <input type="number" step="0.01" id="staff-allow-transport" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="staff-allow-extra">Extra-Curricular Allowance (₦)</label>
+                                <input type="number" step="0.01" id="staff-allow-extra" value="0">
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="form-section-title">Deductions &amp; Statutory</h4>
+                            <div class="form-group">
+                                <label for="staff-ded-pension">Pension Contribution (%)</label>
+                                <input type="number" step="0.1" id="staff-ded-pension" value="5.0" max="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="staff-ded-tax">Estimated Tax Rate (%)</label>
+                                <input type="number" step="0.1" id="staff-ded-tax" value="12.0" max="100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="secondary-btn" id="cancel-staff-btn">Cancel</button>
+                    <button type="submit" class="primary-btn" id="submit-staff-btn">Add Staff Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: PAYSLIP STATEMENT VIEW -->
+    <div class="modal-overlay" id="payslip-modal">
+        <div class="modal-container payslip-container-modal animate-zoom">
+            <div class="modal-header hide-on-print">
+                <h3>Employee Payslip Statement</h3>
+                <div class="modal-header-actions">
+                    <button class="primary-btn" id="print-payslip-btn">
+                        <i data-lucide="printer"></i> Print Payslip
+                    </button>
+                    <button class="close-btn" id="close-payslip-modal-btn"><i data-lucide="x"></i></button>
+                </div>
+            </div>
+            <div class="payslip-wrapper" id="printable-payslip">
+                <div class="payslip-header">
+                    <div class="school-branding-logo">
+                        <div class="logo-box"><i data-lucide="graduation-cap"></i></div>
+                        <div>
+                            <h2>KING DAVID SCHOL</h2>
+                            <span>100 Academy Boulevard, Suite 500 | Academic Division</span>
+                        </div>
+                    </div>
+                    <div class="payslip-title-block">
+                        <h1>PAYSLIP STATEMENT</h1>
+                        <span id="ps-period">Pay Cycle: May 2026</span>
+                    </div>
+                </div>
+                <div class="payslip-info-grid">
+                    <div class="info-column">
+                        <div class="info-row"><span>Employee Name:</span> <strong id="ps-name">—</strong></div>
+                        <div class="info-row"><span>Designation:</span> <span id="ps-designation">—</span></div>
+                        <div class="info-row"><span>Department:</span> <span id="ps-dept">—</span></div>
+                    </div>
+                    <div class="info-column">
+                        <div class="info-row"><span>Employee ID:</span> <span id="ps-id">—</span></div>
+                        <div class="info-row"><span>Contract Type:</span> <span id="ps-type">—</span></div>
+                        <div class="info-row"><span>Status:</span> <strong class="text-green">PAID</strong></div>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="payslip-columns-grid">
+                    <div class="calc-col">
+                        <h3>Earnings &amp; Allowances</h3>
+                        <table class="payslip-table">
+                            <thead><tr><th>Description</th><th class="amount-col">Amount</th></tr></thead>
+                            <tbody>
+                                <tr><td>Base Rate Earnings <span id="ps-base-rate-desc"></span></td><td class="amount-col" id="ps-base-earn">₦0.00</td></tr>
+                                <tr><td>Housing Allowance</td><td class="amount-col" id="ps-allow-housing">₦0.00</td></tr>
+                                <tr><td>Transport Allowance</td><td class="amount-col" id="ps-allow-transport">₦0.00</td></tr>
+                                <tr><td>Academic/Extra Allowance</td><td class="amount-col" id="ps-allow-extra">₦0.00</td></tr>
+                                <tr class="total-row-minor"><td>Gross Earnings</td><td class="amount-col" id="ps-gross-total">₦0.00</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="calc-col">
+                        <h3>Statutory &amp; Adjustments</h3>
+                        <table class="payslip-table">
+                            <thead><tr><th>Description</th><th class="amount-col">Amount</th></tr></thead>
+                            <tbody>
+                                <tr><td>Income Tax (<span id="ps-tax-rate">12</span>%)</td><td class="amount-col" id="ps-ded-tax">₦0.00</td></tr>
+                                <tr><td>Provident Pension (<span id="ps-pension-rate">5</span>%)</td><td class="amount-col" id="ps-ded-pension">₦0.00</td></tr>
+                                <tr id="ps-absence-row"><td>Absence Adjustments (<span id="ps-absences">0</span> days)</td><td class="amount-col" id="ps-ded-absences">-₦0.00</td></tr>
+                                <tr class="total-row-minor"><td>Total Deductions</td><td class="amount-col" id="ps-ded-total">₦0.00</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="payslip-summary-strip">
+                    <div class="summary-box"><span>Gross Salary</span><h4 id="ps-strip-gross">₦0.00</h4></div>
+                    <div class="summary-box"><span>Total Deductions</span><h4 id="ps-strip-deductions">₦0.00</h4></div>
+                    <div class="summary-box net-box"><span>Net Take-Home Salary</span><h3 id="ps-strip-net">₦0.00</h3></div>
+                </div>
+                <div class="payslip-footer">
+                    <div class="payslip-note">
+                        <p><strong>Note:</strong> This is a computer-generated payslip statement issued on behalf of King David Schol. No physical signature is required.</p>
+                    </div>
+                    <div class="signature-line">
+                        <div class="sign-seal"><i data-lucide="shield-check"></i> Verified</div>
+                        <div class="line"></div>
+                        <span>Authorized Finance Officer Signature</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESET PASSWORD MODAL -->
+    <div id="reset-password-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width:420px;">
+            <div class="modal-header">
+                <div>
+                    <h3>Reset Password</h3>
+                    <p id="reset-pwd-subtitle" style="font-size:13px;color:var(--text-secondary);margin-top:2px;"></p>
+                </div>
+                <button class="close-modal-btn" id="close-reset-pwd-btn"><i data-lucide="x"></i></button>
+            </div>
+            <input type="hidden" id="reset-pwd-user-id">
+            <div class="modal-body" style="padding-top:8px;">
+                <div id="reset-pwd-error" class="auth-error-msg hidden" style="margin-bottom:14px;border-radius:8px;"></div>
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <input type="password" id="reset-pwd-new" class="form-input" placeholder="Minimum 6 characters">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" id="reset-pwd-confirm" class="form-input" placeholder="Repeat new password">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" id="cancel-reset-pwd-btn">Cancel</button>
+                <button class="primary-btn" id="submit-reset-pwd-btn"><i data-lucide="key-round"></i> Update Password</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LINK STAFF MODAL -->
+    <div id="link-staff-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width:440px;">
+            <div class="modal-header">
+                <div>
+                    <h3>Link Staff Record</h3>
+                    <p id="link-staff-subtitle" style="font-size:13px;color:var(--text-secondary);margin-top:2px;"></p>
+                </div>
+                <button class="close-modal-btn" id="close-link-staff-btn"><i data-lucide="x"></i></button>
+            </div>
+            <input type="hidden" id="link-staff-user-id">
+            <div class="modal-body" style="padding-top:8px;">
+                <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Linking a staff record lets this user view their own pay data, timesheets, and payslips in the Staff Portal.</p>
+                <div class="form-group">
+                    <label class="form-label">Staff Directory Record</label>
+                    <select id="link-staff-select" class="form-input">
+                        <option value="">— No linked record (remove link) —</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" id="cancel-link-staff-btn">Cancel</button>
+                <button class="primary-btn" id="submit-link-staff-btn"><i data-lucide="link"></i> Save Link</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cocobase/dist/browser/cocobase.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
