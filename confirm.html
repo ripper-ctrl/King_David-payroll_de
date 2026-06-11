@@ -147,7 +147,7 @@
                 const docs = await db.listDocuments(COCOBASE_COLLECTION, { filters: { cycle }, limit: 1 });
                 if (docs && docs.length > 0) {
                     _cocobaseDocId = docs[0]._id;
-                    return docs[0];
+                    return docs[0].data || docs[0];
                 }
             } catch (err) {
                 console.warn("Cocobase load failed:", err);
@@ -188,7 +188,7 @@
 
             const approval = await loadApproval();
 
-            if (!approval) {
+            if (!approval || !approval.details) {
                 content.innerHTML = `
                     <div class="card error">
                         <div class="icon error-icon">!</div>
@@ -261,7 +261,7 @@
 
             const content = document.getElementById("content");
             const approval = await loadApproval();
-            if (!approval) {
+            if (!approval || !approval.details) {
                 content.innerHTML = `
                     <div class="card error">
                         <div class="icon error-icon">!</div>

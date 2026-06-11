@@ -125,7 +125,7 @@ async function initDatabase() {
             const docs = await db.listDocuments(COCOBASE_COLLECTION, { filters: { cycle: state.currentCycle }, limit: 1 });
             if (docs && docs.length > 0) {
                 state._cocobaseDocId = docs[0]._id;
-                state.pendingApprovals = [docs[0]];
+                state.pendingApprovals = [docs[0].data || docs[0]];
             }
         }
     } catch (err) {
@@ -723,11 +723,11 @@ function renderPayroll() {
     const chkHoursText = document.getElementById("chk-hours-text");
     if (ptHoursLogged > 0) {
         chkHours.className = "check-item checked";
-        chkHours.querySelector("i").setAttribute("data-lucide", "check-circle-2");
+        chkHours.querySelector("i")?.setAttribute("data-lucide", "check-circle-2");
         chkHoursText.textContent = `Verify hours are logged (${ptHoursLogged} hours verified)`;
     } else {
         chkHours.className = "check-item";
-        chkHours.querySelector("i").setAttribute("data-lucide", "circle");
+        chkHours.querySelector("i")?.setAttribute("data-lucide", "circle");
         chkHoursText.textContent = "Verify hours are logged (0 logged so far)";
     }
 
